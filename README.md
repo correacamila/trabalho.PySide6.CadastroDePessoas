@@ -68,12 +68,13 @@ pip install mysql-connector-python
 
 ```
 
-```text
-**!IMPORTANTE: no banco.py, em conectar() coloque o usuário e senha do seu MySQL
+### !IMPORTANTE: no banco.py, em conectar() coloque o usuário e senha do seu MySQL
 
 Por fim, para executar a janela, digite:
 
-'''powershell
+```powershell
 python cadastro.py
 
-**Pronto! Aproveite o sistema! 🍦💗
+```
+
+### Pronto! Aproveite o sistema! 🍦💗
