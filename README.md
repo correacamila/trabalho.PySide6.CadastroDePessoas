@@ -66,8 +66,10 @@ venv\Scripts\Activate
 pip install PySide6
 pip install mysql-connector-python
 
+```
+
 ```text
-!IMPORTANTE: no banco.py, em conectar() coloque o usuário e senha do seu MySQL
+**!IMPORTANTE: no banco.py, em conectar() coloque o usuário e senha do seu MySQL
 
 Por fim, para executar a janela, digite:
 
