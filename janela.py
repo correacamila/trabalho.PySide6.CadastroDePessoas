@@ -301,6 +301,7 @@ class CadastroPessoa(QWidget):
             # mostra uma mensagem pedindo o CEP.
             self.cep.setFocus()
             return False
+            
         if not validar_cep(cep):
             # verifica se o CEP possui 8 números.
             QMessageBox.warning(self, "CEP inválido", "O CEP deve possuir 8 números.")
