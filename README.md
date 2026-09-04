@@ -78,3 +78,24 @@ python cadastro.py
 ```
 
 ### Pronto! Aproveite o sistema! 🍦💗
+
+---
+
+# ✨ Funcionalidades
+
+O sistema possui as seguintes funcionalidades:
+
+- 👤 Cadastro de pessoas;
+- 🪪 Escolha entre CPF e CNPJ;
+- ✅ Validação de CPF e CNPJ;
+- 📧 Validação do formato do e-mail;
+- 📱 Validação e formatação automática do celular;
+- 📍 Validação e formatação automática do CEP;
+- 🔎 Consulta automática de endereço através do CEP;
+- 🏠 Preenchimento automático de logradouro, bairro, cidade e estado;
+- ⚠️ Mensagens de erro quando algum dado é inválido;
+- 🎯 Direcionamento para o campo que precisa ser corrigido;
+- 💾 Salvamento dos cadastros no banco de dados MySQL;
+- 🧹 Botão para limpar os campos do formulário;
+- 📋 Visualização dos cadastros realizados em uma tabela;
+- 🎨 Interface gráfica personalizada com CSS/QSS.
