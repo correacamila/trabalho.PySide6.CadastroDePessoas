@@ -35,6 +35,8 @@ ATV8/
 ⤷ tabela.py: tabela para consulta dos cadastros
 ⤷ validacoes.py: validações de cada dado
 
+```
+
 # ▶️ Passo a passo para executar
 
 ## 1. Configurar o banco de dados
