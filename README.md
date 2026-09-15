@@ -1,4 +1,4 @@
-# Sistema de Cadastro de Pessoas
+# Sistema de Cadastro de Pessoas Doce de Neve
 
 Sistema desktop desenvolvido em Python e PySide6 para realizar o cadastro de pessoas, com validação de informações, consulta automática de endereço pelo CEP e armazenamento dos dados em um banco de dados SQLite.
 
@@ -48,6 +48,7 @@ ATV8/
 ⤷ validacoes.py: contém as validações dos dados
 
 ⤷ cadastro_pessoas.db: banco de dados SQLite utilizado pelo sistema
+
 
 # ▶️ Passo a passo para executar
 
