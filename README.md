@@ -48,6 +48,8 @@ ATV8/
 ⤷ validacoes.py: contém as validações dos dados
 
 ⤷ cadastro_pessoas.db: banco de dados SQLite utilizado pelo sistema
+
+```markdown
 ---
 
 # ▶️ Passo a passo para executar
