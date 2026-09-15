@@ -1,68 +1,141 @@
-import mysql.connector
-from mysql.connector import Error
+from sqlalchemy.orm import sessionmaker
+from modelos import engine, Pessoa
 
-def conectar():
-    return mysql.connector.connect(
-        host="localhost",
-        user="atv8",
-        password="SenhaAtv8",
-        database="cadastro_pessoas"
-    )
+# Cria a sessão do banco
+Session = sessionmaker(bind=engine)
 
-def cadastrar_pessoa(nome, tipo_documento, documento, email, celular, cep, logradouro, numero, complemento, bairro, cidade, estado):
-    conexao = None
-    cursor = None
+
+def criar_banco():
+    # A tabela é criada em modelos.py
+    print("Banco e tabela prontos!")
+
+
+def cadastrar_pessoa(nome, tipo_documento, documento, email, celular,
+                     cep, logradouro, numero, complemento, bairro,
+                     cidade, estado):
+    sessao = Session()
+
     try:
-        # tenta conectar ao banco e criar o cursor
-        conexao = conectar()
-        cursor = conexao.cursor()
+        # Cria a pessoa com os dados do formulário
+        pessoa = Pessoa(
+            nome=nome,
+            tipo_documento=tipo_documento,
+            documento=documento,
+            email=email,
+            celular=celular,
+            cep=cep,
+            logradouro=logradouro,
+            numero=numero,
+            complemento=complemento,
+            bairro=bairro,
+            cidade=cidade,
+            estado=estado
+        )
 
-        # comando SQL para inserir os dados da pessoa
-        sql = """
-        INSERT INTO pessoas
-        (nome, tipo_documento, documento, email, celular, cep, logradouro, numero, complemento, bairro, cidade, estado)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-
-        # valores que serão enviados para o banco
-        valores = (nome, tipo_documento, documento, email, celular, cep, logradouro, numero, complemento, bairro, cidade, estado)
-
-        cursor.execute(sql, valores)
-        conexao.commit()
-
-        # informa que o cadastro foi realizado
+        # Salva no banco
+        sessao.add(pessoa)
+        sessao.commit()
         return True, None
 
-    except Error:
-        # mostra uma mensagem caso aconteça algum erro no banco
-        return False, "Não foi possível salvar o cadastro. Verifique a conexão com o banco de dados."
+    except Exception:
+        # Desfaz se ocorrer algum erro
+        sessao.rollback()
+        return False, "Não foi possível salvar o cadastro."
 
     finally:
-        # fecha o cursor e a conexão com o banco
-        if cursor:
-            cursor.close()
+        # Fecha a sessão
+        sessao.close()
 
-        if conexao and conexao.is_connected():
-            conexao.close()
 
 def listar_pessoas():
-    conexao = None
-    cursor = None
+    sessao = Session()
 
     try:
-        conexao = conectar()
-        cursor = conexao.cursor()
-        cursor.execute("SELECT * FROM pessoas")
-        pessoas = cursor.fetchall()
+        # Busca todas as pessoas cadastradas
+        pessoas = sessao.query(Pessoa).all()
 
-        return pessoas
+        # Retorna os dados no formato usado pela tabela
+        return [
+            (
+                pessoa.id,
+                pessoa.nome,
+                pessoa.tipo_documento,
+                pessoa.documento,
+                pessoa.email,
+                pessoa.celular,
+                pessoa.cep,
+                pessoa.logradouro,
+                pessoa.numero,
+                pessoa.complemento,
+                pessoa.bairro,
+                pessoa.cidade,
+                pessoa.estado
+            )
+            for pessoa in pessoas
+        ]
 
-    except Error:
+    except Exception:
         return []
 
     finally:
-        if cursor:
-            cursor.close()
+        sessao.close()
 
-        if conexao and conexao.is_connected():
-            conexao.close()
+def atualizar_pessoa(id_pessoa, nome, tipo_documento, documento, email,
+                     celular, cep, logradouro, numero, complemento,
+                     bairro, cidade, estado):
+    sessao = Session()
+
+    try:
+        # Busca a pessoa pelo ID
+        pessoa = sessao.query(Pessoa).filter_by(id=id_pessoa).first()
+
+        if not pessoa:
+            return False, "Pessoa não encontrada."
+
+        # Atualiza os dados
+        pessoa.nome = nome
+        pessoa.tipo_documento = tipo_documento
+        pessoa.documento = documento
+        pessoa.email = email
+        pessoa.celular = celular
+        pessoa.cep = cep
+        pessoa.logradouro = logradouro
+        pessoa.numero = numero
+        pessoa.complemento = complemento
+        pessoa.bairro = bairro
+        pessoa.cidade = cidade
+        pessoa.estado = estado
+
+        # Salva as alterações
+        sessao.commit()
+        return True, None
+
+    except Exception:
+        sessao.rollback()
+        return False, "Não foi possível atualizar o cadastro."
+
+    finally:
+        sessao.close()
+
+def excluir_pessoa(id_pessoa):
+    sessao = Session()
+
+    try:
+        # Busca a pessoa pelo ID
+        pessoa = sessao.query(Pessoa).filter_by(id=id_pessoa).first()
+
+        if not pessoa:
+            return False, "Pessoa não encontrada."
+
+        # Exclui a pessoa
+        sessao.delete(pessoa)
+        sessao.commit()
+
+        return True, None
+
+    except Exception:
+        sessao.rollback()
+        return False, "Não foi possível excluir o cadastro."
+
+    finally:
+        sessao.close()

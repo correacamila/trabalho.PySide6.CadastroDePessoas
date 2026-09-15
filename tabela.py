@@ -1,40 +1,165 @@
-from PySide6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout, QLabel
-from banco import listar_pessoas
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QMessageBox, QLineEdit)
+from banco import listar_pessoas, excluir_pessoa
+from pdf import gerar_pdf
 
 class TabelaPessoas(QWidget):
-    def __init__(self):
+    def __init__(self, ao_editar=None):
         super().__init__()
-        self.setWindowTitle("Doce Neve - Pessoas")
-        self.resize(900, 500)
-        self.criar_interface()
-        self.carregar_pessoas()
 
-    def criar_interface(self):
-        titulo = QLabel("Pessoas cadastradas")
-        titulo.setObjectName("titulo")
+        # Função recebida para editar uma pessoa
+        self.ao_editar = ao_editar
 
+        self.setWindowTitle("Pessoas cadastradas")
+        self.resize(1100, 500)
+
+        # Cria a tabela
         self.tabela = QTableWidget()
-        self.tabela.setAlternatingRowColors(True)
-        self.tabela.setSelectionBehavior(QTableWidget.SelectRows)
-        self.tabela.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.tabela.horizontalHeader().setStretchLastSection(True)
         self.tabela.setColumnCount(13)
+
         self.tabela.setHorizontalHeaderLabels([
-            "ID", "Nome", "Tipo", "Documento", "E-mail", "Celular",
-            "CEP", "Logradouro", "Número", "Complemento", "Bairro",
-            "Cidade", "Estado"
+            "ID", "Nome", "Tipo", "Documento", "E-mail",
+            "Celular", "CEP", "Logradouro", "Número",
+            "Complemento", "Bairro", "Cidade", "Estado"
         ])
 
+        # Organiza o layout
         layout = QVBoxLayout()
-        layout.addWidget(titulo)
+
+        # Barra de pesquisa por nome
+        self.pesquisa = QLineEdit()
+        self.pesquisa.setPlaceholderText("Pesquisar pessoa pelo nome...")
+        self.pesquisa.textChanged.connect(self.filtrar_pessoas)
+        layout.addWidget(self.pesquisa)
+
         layout.addWidget(self.tabela)
 
-        self.setLayout(layout)
+        # Cria uma linha para os botões
+        botoes = QHBoxLayout()
 
-    def carregar_pessoas(self):
+        # Botão para editar
+        self.botao_editar = QPushButton("Editar selecionado")
+        self.botao_editar.clicked.connect(self.editar_selecionado)
+        botoes.addWidget(self.botao_editar)
+
+        # Botão para excluir
+        self.botao_excluir = QPushButton("Excluir selecionado")
+        self.botao_excluir.clicked.connect(self.excluir_selecionado)
+        botoes.addWidget(self.botao_excluir)
+
+        # Botão para gerar PDF
+        self.botao_pdf = QPushButton("Gerar PDF")
+        self.botao_pdf.clicked.connect(self.gerar_pdf_tabela)
+        botoes.addWidget(self.botao_pdf)
+
+        # Adiciona a linha de botões ao layout principal
+        layout.addLayout(botoes)
+        
+        self.setLayout(layout)
+        self.carregar_dados()
+
+    def carregar_dados(self):
+        # Busca os cadastros no banco
         pessoas = listar_pessoas()
+
         self.tabela.setRowCount(len(pessoas))
 
+        # Coloca os dados na tabela
         for linha, pessoa in enumerate(pessoas):
-            for coluna in range(13):
-                self.tabela.setItem(linha, coluna, QTableWidgetItem(str(pessoa[coluna])))
+            for coluna, valor in enumerate(pessoa):
+                self.tabela.setItem(
+                    linha,
+                    coluna,
+                    QTableWidgetItem(str(valor or ""))
+                )
+
+    def editar_selecionado(self):
+        # Descobre qual linha está selecionada
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Selecione uma pessoa para editar."
+            )
+            return
+
+        # Busca novamente os dados do banco
+        pessoas = listar_pessoas()
+        pessoa = pessoas[linha]
+
+        # Envia a pessoa selecionada para o formulário
+        if self.ao_editar:
+            self.ao_editar(pessoa)
+
+    def excluir_selecionado(self):
+        # Descobre qual linha está selecionada
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Selecione uma pessoa para excluir."
+            )
+            return
+
+        # Busca os dados da pessoa selecionada
+        pessoas = listar_pessoas()
+        pessoa = pessoas[linha]
+
+        # Pega o ID da pessoa
+        id_pessoa = pessoa[0]
+
+        # Confirma antes de excluir
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("Confirmar exclusão")
+        caixa.setText("Deseja realmente excluir esta pessoa?")
+        caixa.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+
+        # Traduz os botões
+        caixa.button(QMessageBox.Yes).setText("Sim")
+        caixa.button(QMessageBox.No).setText("Não")
+
+        resposta = caixa.exec()
+
+        if resposta == QMessageBox.Yes:
+            sucesso, erro = excluir_pessoa(id_pessoa)
+
+            if sucesso:
+                QMessageBox.information(
+                    self,
+                    "Sucesso",
+                    "Cadastro excluído com sucesso!"
+                )
+
+                # Atualiza a tabela
+                self.carregar_dados()
+            else:
+                QMessageBox.warning(self, "Erro", erro)
+
+    def gerar_pdf_tabela(self):
+        # Gera o arquivo PDF
+        caminho = gerar_pdf()
+
+        QMessageBox.information(
+            self,
+            "PDF gerado",
+            f"PDF criado com sucesso!\n\nArquivo: {caminho}"
+        )
+
+    def filtrar_pessoas(self, texto):
+        # Deixa o texto da pesquisa em letras minúsculas
+        texto = texto.lower()
+
+        # Percorre todas as linhas da tabela
+        for linha in range(self.tabela.rowCount()):
+            # Pega o nome da pessoa, que está na coluna 1
+            item = self.tabela.item(linha, 1)
+
+            if item:
+                nome = item.text().lower()
+
+                # Mostra a linha se o nome tiver o texto pesquisado
+                mostrar = texto in nome
+                self.tabela.setRowHidden(linha, not mostrar)

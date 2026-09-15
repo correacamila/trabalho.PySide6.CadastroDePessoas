@@ -1,18 +1,19 @@
 # Sistema de Cadastro de Pessoas
 
-Sistema desktop desenvolvido em Python e PySide6 para realizar o cadastro de pessoas, com validação de informações, consulta automática de endereço pelo CEP e armazenamento dos dados em um banco de dados MySQL.
+Sistema desktop desenvolvido em Python e PySide6 para realizar o cadastro de pessoas, com validação de informações, consulta automática de endereço pelo CEP e armazenamento dos dados em um banco de dados SQLite.
 
-## 📋 O que é necessário para executar o projeto
+---
+
+# 📋 O que é necessário para executar o projeto
 
 Antes de executar o sistema, é necessário ter instalado:
 
 - Python 3;
 - Visual Studio Code (VS Code);
-- MySQL Server;
-- MySQL Workbench;
 - Extensão Python no VS Code;
 - Biblioteca PySide6;
-- Biblioteca mysql-connector-python;
+- Biblioteca SQLAlchemy;
+- Biblioteca ReportLab;
 - Conexão com a internet para realizar a consulta de CEP.
 
 O projeto utiliza a API ViaCEP para consultar os dados do endereço.
@@ -21,60 +22,77 @@ O projeto utiliza a API ViaCEP para consultar os dados do endereço.
 
 # 📁 Estrutura do projeto
 
-O projeto está organizado nos seguintes arquivos (normalmente em ordem alfabética):
+O projeto está organizado nos seguintes arquivos:
 
 ```text
 ATV8/
-⤷ banco.py: realiza conexão com o MySQL e salva/consulta os cadastros
-⤷ cadastro.py: inicia e carrega o estilo
-⤷ cep.py: faz a consulta da API
-⤷ estilo.css: tem a aparência
-⤷ janela.py: a janela com as interações
-⤷ README.md: passo a passo do funcionamento do sistema
-⤷ SQL.sql: código para a tabela no MySQL
-⤷ tabela.py: tabela para consulta dos cadastros
-⤷ validacoes.py: validações de cada dado
 
-```
+⤷ banco.py: realiza as operações de cadastro, consulta, atualização e exclusão no banco
+
+⤷ cadastro.py: inicia o sistema
+
+⤷ cep.py: faz a consulta da API ViaCEP
+
+⤷ estilo.css: contém a aparência da aplicação
+
+⤷ janela.py: contém a janela principal e as interações do formulário
+
+⤷ modelos.py: configura o banco SQLite e a tabela de pessoas
+
+⤷ pdf.py: gera o PDF com os cadastros
+
+⤷ README.md: explica o funcionamento e a execução do sistema
+
+⤷ tabela.py: exibe os cadastros em uma tabela
+
+⤷ validacoes.py: contém as validações dos dados
+
+⤷ cadastro_pessoas.db: banco de dados SQLite utilizado pelo sistema
 
 # ▶️ Passo a passo para executar
 
-## 1. Configurar o banco de dados
+## 1. Abrir o projeto
 
-Primeiro, abra o **MySQL Workbench**.
+Primeiro, abra a pasta `ATV8` no **Visual Studio Code**.
 
-Abra o arquivo `SQL.sql` que está na pasta do projeto e copie todo o código que está escrito nele e cole no MySQL Workbench.
-Depois, execute o código para criar o banco de dados e a tabela necessários para o funcionamento do sistema.
-
----
-
-## 2. Abrir o projeto
-
-Depois de configurar o banco de dados, abra a pasta `ATV8` no **Visual Studio Code**.
-
-Abra um **terminal integrado** dentro da pasta `ATV8`.
+Depois, abra um **terminal integrado** dentro da pasta do projeto.
 
 ---
 
-## 3. Criar o ambiente virtual
+## 2. Criar o ambiente virtual
 
 No terminal, digite:
 
 ```powershell
 python -m venv venv
-venv\Scripts\Activate
-pip install PySide6
-pip install mysql-connector-python
-
 ```
 
-### !IMPORTANTE: no banco.py, em conectar() coloque o usuário e senha do seu MySQL
+Para ativar o ambiente virtual no Windows, digite:
 
-Por fim, para executar a janela, digite:
+```powershell
+venv\Scripts\Activate
+```
+
+---
+
+## 3. Instalar as bibliotecas
+
+Com o ambiente virtual ativado, instale as bibliotecas necessárias:
+
+```powershell
+pip install PySide6
+pip install SQLAlchemy
+pip install reportlab
+```
+
+---
+
+## 4. Executar o sistema
+
+Para abrir a janela principal, digite:
 
 ```powershell
 python cadastro.py
-
 ```
 
 ### Pronto! Aproveite o sistema! 🍦💗
@@ -95,7 +113,12 @@ O sistema possui as seguintes funcionalidades:
 - 🏠 Preenchimento automático de logradouro, bairro, cidade e estado;
 - ⚠️ Mensagens de erro quando algum dado é inválido;
 - 🎯 Direcionamento para o campo que precisa ser corrigido;
-- 💾 Salvamento dos cadastros no banco de dados MySQL;
+- 💾 Salvamento dos cadastros no banco de dados SQLite;
 - 🧹 Botão para limpar os campos do formulário;
 - 📋 Visualização dos cadastros realizados em uma tabela;
+- 🔎 Barra de pesquisa para filtrar pessoas pelo nome;
+- ✏️ Atualização dos dados de uma pessoa cadastrada;
+- 🗑️ Exclusão de pessoas cadastradas;
+- ❓ Confirmação antes de excluir um cadastro;
+- 📄 Geração de PDF com os dados da tabela;
 - 🎨 Interface gráfica personalizada com CSS/QSS.

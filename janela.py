@@ -1,12 +1,13 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QComboBox, QMessageBox, QFormLayout, QHBoxLayout, QVBoxLayout, QGroupBox
 from validacoes import validar_cpf, validar_cnpj, validar_email, validar_celular, validar_cep, validar_nome
 from cep import consultar_cep
-from banco import cadastrar_pessoa
+from banco import cadastrar_pessoa, atualizar_pessoa
 from tabela import TabelaPessoas
 
 class CadastroPessoa(QWidget):
     # é a janela
     def __init__(self):
+        self.id_pessoa = None
         super().__init__()
         # seguinte janela vai funcionar
         self.setWindowTitle("︶꒷꒦︶ ๋ ࣭.⭑🍨 Doce Neve - Cadastro de Pessoa⭑.  ๋︶꒦꒷︶")
@@ -362,34 +363,88 @@ class CadastroPessoa(QWidget):
         # depois de limpar os campos, coloca o foco do teclado no campo de nome e reseta os campos de seleção para a primeira opção.
 
     def cadastrar(self):
+        # Verifica se os dados estão corretos
         if not self.validar_dados():
             return
 
-        # tenta salvar os dados no banco
-        sucesso, erro = cadastrar_pessoa(
-            self.nome.text(),
-            self.tipo_documento.currentText(),
-            self.documento.text(),
-            self.email.text(),
-            self.celular.text(),
-            self.cep.text(),
-            self.logradouro.text(),
-            self.numero.text(),
-            self.complemento.text(),
-            self.bairro.text(),
-            self.cidade.text(),
-            self.estado.currentText()
-        )
+        # Pega os valores dos campos
+        nome = self.nome.text()
+        tipo_documento = self.tipo_documento.currentText()
+        documento = self.documento.text()
+        email = self.email.text()
+        celular = self.celular.text()
+        cep = self.cep.text()
+        logradouro = self.logradouro.text()
+        numero = self.numero.text()
+        complemento = self.complemento.text()
+        bairro = self.bairro.text()
+        cidade = self.cidade.text()
+        estado = self.estado.currentText()
 
-        # se houver erro, mostra a mensagem e para o cadastro
-        if not sucesso:
+        # Se não existe ID, faz um novo cadastro
+        if self.id_pessoa is None:
+            sucesso, erro = cadastrar_pessoa(
+                nome, tipo_documento, documento, email, celular,
+                cep, logradouro, numero, complemento, bairro,
+                cidade, estado
+            )
+            mensagem = "Cadastro realizado com sucesso!"
+
+        # Se existe ID, atualiza o cadastro
+        else:
+            sucesso, erro = atualizar_pessoa(
+                self.id_pessoa, nome, tipo_documento, documento,
+                email, celular, cep, logradouro, numero,
+                complemento, bairro, cidade, estado
+            )
+            mensagem = "Cadastro atualizado com sucesso!"
+
+        # Mostra o resultado
+        if sucesso:
+            QMessageBox.information(self, "Sucesso", mensagem)
+            self.id_pessoa = None
+            self.botao_cadastrar.setText("Cadastrar")
+
+            # Mostra novamente os botões
+            self.botao_limpar.show()
+            self.botao_tabela.show()
+
+            self.limpar()
+        else:
             QMessageBox.warning(self, "Erro", erro)
-            return
-
-        # mostra mensagem de sucesso e limpa os campos
-        QMessageBox.information(self, "Cadastro", "Cadastro realizado com sucesso!")
-        self.limpar()
 
     def abrir_tabela(self):
-        self.tabela = TabelaPessoas()
+        self.tabela = TabelaPessoas(self.editar_pessoa)
         self.tabela.show()
+
+    def carregar_pessoa(self, pessoa):
+        # Guarda o ID da pessoa que será editada
+        self.id_pessoa = pessoa[0]
+
+        # Preenche os campos com os dados salvos
+        self.nome.setText(pessoa[1])
+        self.tipo_documento.setCurrentText(pessoa[2])
+        self.documento.setText(pessoa[3])
+        self.email.setText(pessoa[4])
+        self.celular.setText(pessoa[5])
+        self.cep.setText(pessoa[6])
+        self.logradouro.setText(pessoa[7])
+        self.numero.setText(pessoa[8])
+        self.complemento.setText(pessoa[9] or "")
+        self.bairro.setText(pessoa[10])
+        self.cidade.setText(pessoa[11])
+        self.estado.setCurrentText(pessoa[12])
+
+        # Muda o texto do botão
+        self.botao_cadastrar.setText("Atualizar")
+        # Esconde os outros botões durante a atualização
+        self.botao_limpar.hide()
+        self.botao_tabela.hide()
+
+    def editar_pessoa(self, pessoa):
+        # Coloca os dados escolhidos no formulário
+        self.carregar_pessoa(pessoa)
+
+        # Mostra a janela do cadastro
+        self.show()
+        self.activateWindow()
