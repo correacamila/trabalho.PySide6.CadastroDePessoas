@@ -105,22 +105,25 @@ python cadastro.py
 
 O sistema possui as seguintes funcionalidades:
 
-- 👤 Cadastro de pessoas;
-- 🪪 Escolha entre CPF e CNPJ;
-- ✅ Validação de CPF e CNPJ;
-- 📧 Validação do formato do e-mail;
-- 📱 Validação e formatação automática do celular;
-- 📍 Validação e formatação automática do CEP;
-- 🔎 Consulta automática de endereço através do CEP;
-- 🏠 Preenchimento automático de logradouro, bairro, cidade e estado;
-- ⚠️ Mensagens de erro quando algum dado é inválido;
-- 🎯 Direcionamento para o campo que precisa ser corrigido;
-- 💾 Salvamento dos cadastros no banco de dados SQLite;
-- 🧹 Botão para limpar os campos do formulário;
-- 📋 Visualização dos cadastros realizados em uma tabela;
-- 🔎 Barra de pesquisa para filtrar pessoas pelo nome;
-- ✏️ Atualização dos dados de uma pessoa cadastrada;
-- 🗑️ Exclusão de pessoas cadastradas;
-- ❓ Confirmação antes de excluir um cadastro;
+* 👤 Cadastro de pessoas;
+* 🪪 Escolha entre CPF e CNPJ;
+* ✅ Validação de CPF e CNPJ;
+* 📧 Validação do formato do e-mail;
+* 📱 Validação e formatação automática do celular;
+* 📍 Validação e formatação automática do CEP;
+* 🔎 Consulta automática de endereço através do CEP;
+* 🏠 Preenchimento automático de logradouro, bairro, cidade e estado;
+* ⚠️ Mensagens de erro quando algum dado é inválido;
+* 🎯 Direcionamento para o campo que precisa ser corrigido;
+* 💾 Salvamento dos cadastros no banco de dados SQLite;
+* 🧹 Botão para limpar os campos do formulário;
+* 📋 Visualização dos cadastros realizados em uma tabela;
+* 🔎 Barra de pesquisa para filtrar pessoas pelo nome;
+* ✏️ Atualização dos dados de uma pessoa cadastrada;
+* 🗑️ Exclusão de pessoas cadastradas;
+* ❓ Confirmação antes de excluir um cadastro;
+* 📄 Geração de PDF com os dados da tabela;
+* 🎨 Interface gráfica personalizada com CSS/QSS.
+
 - 📄 Geração de PDF com os dados da tabela;
 - 🎨 Interface gráfica personalizada com CSS/QSS.
