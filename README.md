@@ -49,25 +49,6 @@ ATV8/
 
 ⤷ cadastro_pessoas.db: banco de dados SQLite utilizado pelo sistema
 
-
-# ▶️ Passo a passo para executar
-
-## 1. Abrir o projeto
-
-Primeiro, abra a pasta `ATV8` no **Visual Studio Code**.
-
-Depois, abra um **terminal integrado** dentro da pasta do projeto.
-
----
-
-## 2. Criar o ambiente virtual
-
-No terminal, digite:
-
-```powershell
-python -m venv venv
-```
-
 Para ativar o ambiente virtual no Windows, digite:
 
 ```powershell
