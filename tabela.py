@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QMessageBox, QLineEdit)
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QMessageBox, QLineEdit, QHeaderView, QAbstractItemView)
 from banco import listar_pessoas, excluir_pessoa
 from pdf import gerar_pdf
 
@@ -10,17 +10,38 @@ class TabelaPessoas(QWidget):
         self.ao_editar = ao_editar
 
         self.setWindowTitle("Pessoas cadastradas")
-        self.resize(1100, 500)
+        self.resize(1720, 500)
 
         # Cria a tabela
         self.tabela = QTableWidget()
         self.tabela.setColumnCount(13)
+        # Permite selecionar a linha inteira
+        self.tabela.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+        # Permite selecionar apenas uma pessoa por vez
+        self.tabela.setSelectionMode(QAbstractItemView.SingleSelection)
 
         self.tabela.setHorizontalHeaderLabels([
             "ID", "Nome", "Tipo", "Documento", "E-mail",
             "Celular", "CEP", "Logradouro", "Número",
             "Complemento", "Bairro", "Cidade", "Estado"
         ])
+
+        # Ajusta a largura das colunas
+        self.tabela.setColumnWidth(0, 40)    # ID
+        self.tabela.setColumnWidth(1, 180)   # Nome
+        self.tabela.setColumnWidth(2, 70)    # Tipo
+        self.tabela.setColumnWidth(3, 140)   # Documento
+        self.tabela.setColumnWidth(4, 200)   # E-mail
+        self.tabela.setColumnWidth(5, 130)   # Celular
+        self.tabela.setColumnWidth(6, 90)    # CEP
+        self.tabela.setColumnWidth(7, 200)   # Logradouro
+        self.tabela.setColumnWidth(8, 70)    # Número
+        self.tabela.setColumnWidth(9, 150)   # Complemento
+        self.tabela.setColumnWidth(10, 150)  # Bairro
+        self.tabela.setColumnWidth(11, 150)  # Cidade
+        self.tabela.setColumnWidth(12, 70)   # Estado
+
 
         # Organiza o layout
         layout = QVBoxLayout()

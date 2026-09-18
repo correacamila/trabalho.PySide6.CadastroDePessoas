@@ -86,3 +86,18 @@ QHeaderView::section {
     border: none;
     font-weight: bold;
 }
+
+QTableWidget {
+    selection-background-color: #d9b3cc;
+    selection-color: #3b2435;
+    alternate-background-color: #fff7fc;
+}
+
+QTableWidget::item:selected {
+    background-color: #d9b3cc;
+    color: #3b2435;
+}
+
+QTableWidget::item:focus {
+    outline: none;
+}
